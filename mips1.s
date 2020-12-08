@@ -27,7 +27,7 @@ FILA6:	.byte  2,0,0,0,0,0,0,0,0,2
 FILA7:	.byte  2,0,0,0,0,0,0,0,0,2
 FILA8:	.byte  2,0,0,0,0,0,0,0,0,2
 FILA9:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA10:	.byte  1,1,1,1,1,1,1,1,1,1
+FILA10:	.byte  2,1,1,1,1,1,1,1,1,2
 
 
 
@@ -51,7 +51,7 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 ; Asume:
 ;   - $A0 cantidad de ciclos de espera
 DibujarMapa:	daddi $t0, $zero, 0					; contador de sprites dibujados
-				daddi $t1, $zero, 100				; maxima cant de elementos en la matriz
+				daddi $t1, $zero, 160				; maxima cant de elementos en la matriz
 				daddi $t2, $zero, 0					; posicion X del elemento en la matriz
 				daddi $t3, $zero, 45				; posicion Y del elemento en la matriz
 				daddi $t4, $zero, 50				; tamanio de la fila
@@ -64,9 +64,10 @@ DibujarMapa:	daddi $t0, $zero, 0					; contador de sprites dibujados
 
 dibujar:		beq $t0, $t1, finDibujar 			; si se dibujo toda la matriz, finalizar subrutina
 				lbu $t5, MAPA1($t0)					; $t5: dato de la matriz
+				daddi $t6, $zero, 2					; condicion de sprite a dibujar 0 == BACKGROUND
 				daddi $t7, $zero, 1					; offset de pixeles del objeto a dibujar
-				daddi $t6, $zero, 2					; condicion de sprite a dibujar 2 == BACKGROUND
-				beq $t5, $t6, dibujarBackgr			; $t5 == 2 => dibujar background
+				beq $t5, $t6, dibujarBackgr			; $t5 == 0 => dibujar background
+				j finElemento
 
 dibujarBackgr:	lbu $t6, BACKGROUND($t7)			; carga la posX del sprite a dibujar
 				beq $t6, $t9, finElemento			; $t6 == 99 => pasar al siguiente sprite
@@ -95,6 +96,7 @@ finElemento:	daddi $t0, $t0, 1					; pasa al siguiente elemento de la matriz
 
 sigFila:		daddi $t2, $zero, 0					; pasa a la sig fila. Pone X en 0
 				daddi $t3, $t3, -5					; disminuye Y
+				daddi $t0, $t0, 6
 				j dibujar
 
 finDibujar:	jr $ra
