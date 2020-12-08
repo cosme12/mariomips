@@ -20,15 +20,15 @@ BLOQUE: .byte 16,0,0,0,1,0,2,0,3,98,8,1,0,2,0,3,0,98,24,4,0,1,1,2,1,3,1,1,2,2,2,
 
 ;Mapa
 
-MAPA1:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA2:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA3:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA4:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA5:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA6:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA7:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA8:	.byte  2,0,0,0,0,0,0,0,0,2
-FILA9:	.byte  2,0,0,0,0,0,0,0,0,2
+MAPA1:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA1:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA3:	.byte  0,0,0,1,0,0,0,0,0,0
+FILA4:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA5:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA6:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA7:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA8:	.byte  0,0,0,0,0,0,0,0,0,1
+FILA9:	.byte  0,0,0,0,0,0,0,0,0,1
 FILA10:	.byte  1,1,1,1,1,1,1,1,1,1
 
 
@@ -131,8 +131,8 @@ dibujarSuelo1:	lbu $t6, BLOQUE($t7)			; carga la posX del sprite a dibujar
 
 finElemento:	daddi $t0, $t0, 1					; pasa al siguiente elemento de la matriz
 				daddi $t2, $t2, 5					; cambia la coordenada X
-				beq	$t2, $t4, sigFila				; x == 50 => j sigFila
 				daddi $t8, $zero, 0					; reinicia el offset del color
+				beq	$t2, $t4, sigFila				; x == 50 => j sigFila
 				j dibujar
 
 sigFila:		daddi $t2, $zero, 0					; pasa a la sig fila. Pone X en 0
