@@ -13,7 +13,7 @@ ARROW_ARR: .byte 32
 ARROW_ABJ: .byte 32
 
 
-BACKGROUND: .byte 12,0,1,1,1,2,1,3,1,4,1,5,2,1,2,2,2,3,2,4,2,5,3,1,3,2,3,3,3,4,3,5,4,1,4,2,4,3,4,4,4,5,5,1,5,2,5,3,5,4,5,5,99
+BACKGROUND: .byte 12,0,0,1,1,1,2,1,3,1,4,1,5,2,1,2,2,2,3,2,4,2,5,3,1,3,2,3,3,3,4,3,5,4,1,4,2,4,3,4,4,4,5,5,1,5,2,5,3,5,4,5,5,99
 
 
 ;Mapa
@@ -63,13 +63,13 @@ DibujarMapa:	daddi $t0, $zero, 0					; contador de sprites dibujados
 
 
 dibujar:		beq $t0, $t1, finDibujar 			; si se dibujo toda la matriz, finalizar subrutina
-				lbu $t5, MAPA1($t0)					; $s1: dato de la matriz
+				lbu $t5, MAPA1($t0)					; $t5: dato de la matriz
 				daddi $t7, $zero, 1					; offset de pixeles del objeto a dibujar
 				daddi $t6, $zero, 2					; condicion de sprite a dibujar 2 == BACKGROUND
 				beq $t5, $t6, dibujarBackgr			; $t5 == 2 => dibujar background
 
 dibujarBackgr:	lbu $t6, BACKGROUND($t7)			; carga la posX del sprite a dibujar
-				beq $t6, $t9, finElemento			; $t6 == 9 => pasar al siguiente sprite
+				beq $t6, $t9, finElemento			; $t6 == 99 => pasar al siguiente sprite
 				dadd $t6, $t6, $t2   				; ajusta posicion X del sprite
 				sb $t6, 5($s0)						; DATA+5 recibe el valor de coordenada X
 				daddi $t7, $t7, 1					; incrementa offset de pixeles del objeto a dibujar
@@ -89,12 +89,12 @@ dibujarBackgr:	lbu $t6, BACKGROUND($t7)			; carga la posX del sprite a dibujar
 				j dibujarBackgr
 
 finElemento:	daddi $t0, $t0, 1					; pasa al siguiente elemento de la matriz
-				daddi $t1, $t1, 5					; cambia la coordenada X
-				beq	$t1, $t4, sigFila				; x == 50 => j sigFila
+				daddi $t2, $t2, 5					; cambia la coordenada X
+				beq	$t2, $t4, sigFila				; x == 50 => j sigFila
 				j dibujar
 
-sigFila:		daddi $t1, $t1, 0					; pasa a la sig fila. Pone X en 0
-				daddi $t2, $t2, -5					; disminuye Y
+sigFila:		daddi $t2, $t2, 0					; pasa a la sig fila. Pone X en 0
+				daddi $t3, $t3, -5					; disminuye Y
 				j dibujar
 
 finDibujar:	jr $ra
