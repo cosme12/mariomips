@@ -13,7 +13,7 @@ ARROW_ARR: .byte 32
 ARROW_ABJ: .byte 32
 
 
-BACKGROUND: .byte 12,0,0,1,1,1,2,1,3,1,4,1,5,2,1,2,2,2,3,2,4,2,5,3,1,3,2,3,3,3,4,3,5,4,1,4,2,4,3,4,4,4,5,5,1,5,2,5,3,5,4,5,5,99
+BACKGROUND: .byte 12,0,0,0,1,0,2,0,3,0,4,1,0,1,1,1,2,1,3,1,4,2,0,2,1,2,2,2,3,2,4,3,0,3,1,3,2,3,3,3,4,4,0,4,1,4,2,4,3,4,4,99
 
 
 ;Mapa
@@ -93,7 +93,7 @@ finElemento:	daddi $t0, $t0, 1					; pasa al siguiente elemento de la matriz
 				beq	$t2, $t4, sigFila				; x == 50 => j sigFila
 				j dibujar
 
-sigFila:		daddi $t2, $t2, 0					; pasa a la sig fila. Pone X en 0
+sigFila:		daddi $t2, $zero, 0					; pasa a la sig fila. Pone X en 0
 				daddi $t3, $t3, -5					; disminuye Y
 				j dibujar
 
