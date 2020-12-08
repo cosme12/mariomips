@@ -15,6 +15,8 @@ ARROW_ABJ: .byte 32
 
 BACKGROUND: .byte 12,0,0,1,0,2,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,0,2,1,2,2,2,3,2,4,2,0,3,1,3,2,3,3,3,4,3,0,4,1,4,2,4,3,4,4,4,99
 SUELO1: .byte 40,0,0,1,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,98,16,2,0,0,2,1,2,2,2,3,2,4,2,98,36,0,3,1,3,2,3,3,3,4,3,1,4,2,4,3,4,4,4,98,32,0,4,99
+BLOQUE: .byte 16,0,0,0,1,0,2,0,3,98,8,1,0,2,0,3,0,98,24,4,0,1,1,2,1,3,1,1,2,2,2,3,2,1,3,2,3,3,3,0,4,98,28,1,4,2,4,3,4,4,1,4,2,4,3,98,4,4,4,99
+
 
 ;Mapa
 
@@ -104,7 +106,7 @@ dibujarBackgr:	lbu $t6, BACKGROUND($t7)			; carga la posX del sprite a dibujar
 				
 				j dibujarBackgr
 
-dibujarSuelo1:	lbu $t6, SUELO1($t7)			; carga la posX del sprite a dibujar
+dibujarSuelo1:	lbu $t6, BLOQUE($t7)			; carga la posX del sprite a dibujar
 				beq $t6, $t9, finElemento			; $t6 == 99 => pasar al siguiente sprite
 				daddi $t9, $zero, 98				; 
 				beq $t6, $t9, cambiarColor1			; $t6 == 98 => cambiar de color
@@ -113,13 +115,13 @@ dibujarSuelo1:	lbu $t6, SUELO1($t7)			; carga la posX del sprite a dibujar
 				sb $t6, 5($s0)						; DATA+5 recibe el valor de coordenada X
 				daddi $t7, $t7, 1					; incrementa offset de pixeles del objeto a dibujar
 
-				lbu $t6, SUELO1($t7)			; carga la posY del sprite a dibujar
+				lbu $t6, BLOQUE($t7)			; carga la posY del sprite a dibujar
 				dadd $t6, $t6, $t3   				; ajusta posicion Y del sprite
 				sb $t6, 4($s0)						; DATA+4 recibe el valor de coordenada Y
 				daddi $t7, $t7, 1					; incrementa offset de pixeles del objeto a dibujar
 
 													; pintar y mostrar
-				lbu $t6, SUELO1($t8)  			; $t6 = offset, respecto a NEGRO, del color a pintar
+				lbu $t6, BLOQUE($t8)  			; $t6 = offset, respecto a NEGRO, del color a pintar
 				lwu $t6, COLORES($t6)				; $t6 = color a pintar
 				sw $t6, 0($s0)						; DATA recibe el valor del color a pintar
 				daddi $t6, $zero, 5					; $t0 = 5 -> función 5: salida gráfica
