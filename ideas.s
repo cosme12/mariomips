@@ -27,7 +27,7 @@
 1,1,1,1,1,1,1,1,1,1,	1,1,1,1,1,1,1,1,1,1,	1,1,1,1,1,1,1,1,1,1,	1,1,1,1,1,1,1,1,1,1,	1,1,1,1,1,1,1,1,1,1,	1,1,1,1,1,1,1,1,1,1	
 
 
-0 = fondo violeta
+0 = fondo violeta (BACKGROUND)
 1 = piso
 2 = bloque
 x = personaje #no se debe excribir en la matriz, solo para ej de abajo
@@ -39,9 +39,10 @@ Todos los bloques tienen un tamaño de 5x5 = 25 bytes
 |y
 
 
-# Objetos
+# Sprites / Objetos
 
-Empezar con las coordenadas con posicion del color en la lista multiplicado por 4 y terminar con 99
+El sprite de 5x5 se escribe completamente en una linea. El primer byte es el color y se finaliza con 99
+Para sprites con multiples colores, agregar 98 seguido del codigo del color. Ej: 12,0,0,0,1,98,24,0,2,99
 BACKGROUND: .byte 12,1,1,1,2,1,3,1,4,1,5,2,1,2,2,2,3,2,4,2,5,3,1,3,2,3,3,3,4,3,5,4,1,4,2,4,3,4,4,4,5,5,1,5,2,5,3,5,4,5,5,99
 
 # Colision
