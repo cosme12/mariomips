@@ -65,7 +65,7 @@ Mirar izquierda => x += 5
 Mirar derecha => x -= 5
 
 
-# Colores (12)
+# Colores (13)
 
 NEGRO:			.byte 0, 0, 0, 0			; color 0
 BLANCO:			.byte 255, 241, 232, 0		; color 4
@@ -79,7 +79,7 @@ VERDE_CLARO:	.byte 0, 228, 54, 0			; color 32
 VERDE_OSCURO:	.byte 0, 135, 81, 0			; color 36
 MARRON:			.byte 171, 82, 54, 0		; color 40
 AMARILLO:		.byte 255, 236, 39, 0		; color 44
-
+ROJO:			.byte 255, 0, 82, 0			; color 48
 
 
 
