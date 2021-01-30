@@ -18,6 +18,9 @@ BLOQUE: .byte 16,0,0,0,1,0,2,0,3,98,8,1,0,2,0,3,0,98,24,4,0,1,1,2,1,3,1,1,2,2,2,
 SUELO1: .byte 40,0,0,1,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,98,16,2,0,0,2,1,2,2,2,3,2,4,2,98,36,0,3,1,3,2,3,3,3,4,3,1,4,2,4,3,4,4,4,98,32,0,4,99,99,99
 
 JELPI: .byte 28,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,20,1,2,2,2,3,2,98,24,0,3,5,3,98,8,1,4,5,4,99
+BORRAR_JELPI: .byte 48,1,0,98,48,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,48,1,2,2,2,3,2,98,48,0,3,5,3,98,48,1,4,5,4,99
+
+
 
 ;Mapa
 
@@ -51,9 +54,22 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 													; control de personaje
 			ld $s2, ARROW_IZQ($zero)  				; $s2 = tecla "<-" izquierda
 			ld $s3, ARROW_DER($zero)  				; $s3 = tecla "->" derecha
+
+
+													; REPETIR CICLO
 			ld $a0, PERS_X($zero)					; carga coordenada X del personaje
 			ld $a1, PERS_Y($zero)					; carga coordenada Y del personaje
-			jal DibujarPersonaje
+			
+			daddi $a2, $zero, 71					; offset de borrar pj
+			daddi $a3, $zero, 70					; offset al nuevo color a usar
+			jal DibujarPersonaje					; primero borra el personaje ya dibujado
+			daddi $a2, $zero, 1						; offset de pj
+			daddi $a3, $zero, 0						; offset al nuevo color a usar
+			jal DibujarPersonaje					; despues lo vuelve a redibujar
+			
+			;jal MoverPersonaje						; verifica colisiones y mueve PJ
+
+
 
 			halt
 
@@ -63,7 +79,7 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 
 ; Dibuja toda la matriz del mapa
 ; Asume:
-;   - $A0 cantidad de ciclos de espera
+;   - 
 DibujarMapa:	daddi $t0, $zero, 0					; contador de sprites dibujados
 				daddi $t1, $zero, 160				; maxima cant de elementos en la matriz -> 10+6 por fila de matriz
 				daddi $t2, $zero, 0					; posicion X del elemento en la matriz
@@ -140,9 +156,11 @@ finDibujar:	jr $ra
 ; Asume:
 ;   - $a0 coordenada X del personaje
 ;	- $a1 coordenada Y del personaje
-DibujarPersonaje: daddi $t6, $zero, 0					; 
-				daddi $t7, $zero, 1					; offset de pixeles del objeto a dibujar
-				daddi $t8, $zero, 0					; posicion del nuevo color a usar
+;   - $a2 offset al sprite del personaje (se usa para poder dibujar/borrar)
+;   - $a3 offset al nuevo color a usar
+DibujarPersonaje: daddi $t6, $zero, 0				; 
+				dadd $t7, $zero, $a2				; offset de pixeles del objeto a dibujar
+				dadd $t8, $zero, $a3				; offset al nuevo color a usar
 				daddi $t9, $zero, 99				; condicion de corte del sprite
 
 
