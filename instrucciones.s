@@ -32,8 +32,8 @@
 2 = bloque
 x = personaje #no se debe excribir en la matriz, solo para ej de abajo
 
-Dibujar toda la matriz/mapa. 5 para adelante, atras arriba, abajo.  ?????????????
-Todos los bloques tienen un tamaño de 5x5 = 25 bytes
+Dibujar toda la matriz/mapa.
+Todos los sprites/bloques tienen un tamaño de 5x5 = 25 bytes
 |---> x
 |
 |y

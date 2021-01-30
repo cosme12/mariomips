@@ -98,21 +98,23 @@ MoverPersonaje: daddi   $t1, $zero, 5000      		; $t1 = ciclos de espera
 				andi $t0, $t0, 255 					; mascara para quedarse con la tecla presionada
 				j delayCycles
 
-tecl_continuar_ciclo: beq $t0, $s2, moverizquierda  ; verifica tecla <- presionada
-				beq $t0, $s3, moverderecha			; verifica tecla -> preisonada
+teclContinuarCiclo: beq $t0, $s2, moverIzquierda    ; verifica tecla <- presionada
+				beq $t0, $s3, moverDerecha			; verifica tecla -> preisonada
 				j finTeclado
 
-moverderecha: 	daddi $v0, $v0, 3					; velocidad de movimiento del pj
+moverDerecha: 	daddi $v0, $v0, 3					; velocidad de movimiento del pj
 				sd $t6, PERS_X($zero)
 				j finTeclado
 
-moverizquierda: daddi $v0, $v0, -3					; velocidad de movimiento del pj
+moverIzquierda: daddi $v0, $v0, -3					; velocidad de movimiento del pj
 				sd $t6, PERS_X($zero)
 				j finTeclado
 
 delayCycles:  	daddi $t1, $t1, -1					; queda repitiendo ciclos, evita flickering
               	bnez  $t1, delayCycles
-              	j tecl_continuar_ciclo
+              	j teclContinuarCiclo
+
+colision:		
 
 finTeclado:		jr $ra
 
