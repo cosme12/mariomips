@@ -39,7 +39,7 @@ Todos los bloques tienen un tamaño de 5x5 = 25 bytes
 |y
 
 
-# Sprites / Objetos
+# Sprites / Objetos del mapa
 
 El sprite de 5x5 se escribe completamente en una linea. El primer byte es el color, los siguientes las coordenadas
 (0,0),(0,1)... y se finaliza con 99.
@@ -51,11 +51,18 @@ BACKGROUND: .byte 12,0,0,1,0,2,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,0,2,1,2,2,2,3,2,4,2
 
 # Colision
 
+Los ejes coordenados del PJ se comportan asi:
+
+^ y
+|
+|
+|---> x
+
 Obtener la pos del personaje (x,y). DIV ambos por 5
 Ej: x=26, y=45  =>  x=5, y=8
 
 Para avanzar a la derecha ver en la matriz que hay, si está ocupado, no puede avanzar.
-Si esta libre x += 1
+Si esta libre x += 3 (velocidad de movimiento)
 
 
 # Mirar a la izquierda

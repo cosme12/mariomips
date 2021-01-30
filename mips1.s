@@ -36,8 +36,8 @@ FILA9:	.byte  0,0,0,0,0,0,0,0,0,1
 FILA10:	.byte  2,2,2,2,2,2,2,2,2,2
 
 
-PERS_X: .word 20
-PERS_Y: .word 5
+PERS_X: .word 20									; coordenada X inicial del personaje
+PERS_Y: .word 5										; coordenada Y inicial del personaje
 
 
 
@@ -74,11 +74,11 @@ ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
 			daddi $a3, $zero, 0						; offset al nuevo color a usar
 			jal DibujarPersonaje					; despues lo vuelve a redibujar
 			
-			;jal MoverPersonaje						; verifica colisiones y mueve PJ
-			jal Teclado
+			jal MoverPersonaje						; verifica colisiones y mueve PJ
 			j ciclo_principal
 
 			halt
+
 
 
 
@@ -88,7 +88,7 @@ ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
 ;	- $a1 coordenada Y del personaje
 ; Devuelve:
 ;   - $v0 coordenada X del personaje modificada
-Teclado: 		daddi   $t1, $zero, 5000      		; $t1 = ciclos de espera
+MoverPersonaje: daddi   $t1, $zero, 5000      		; $t1 = ciclos de espera
 				daddi $t6, $zero, 0					; 
 				daddi $t0, $zero, 9					; modo teclado
 				dadd $v0, $zero, $a0				; devuelve la posicion X del pj modificada
@@ -115,6 +115,7 @@ delayCycles:  	daddi $t1, $t1, -1					; queda repitiendo ciclos, evita flickerin
               	j tecl_continuar_ciclo
 
 finTeclado:		jr $ra
+
 
 
 
