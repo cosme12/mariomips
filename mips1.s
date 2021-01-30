@@ -33,6 +33,9 @@ FILA9:	.byte  0,0,0,0,0,0,0,0,0,1
 FILA10:	.byte  2,2,2,2,2,2,2,2,2,2
 
 
+PERS_X: .word 20
+PERS_Y: .word 5
+
 
 
 .text
@@ -48,6 +51,8 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 													; control de personaje
 			ld $s2, ARROW_IZQ($zero)  				; $s2 = tecla "<-" izquierda
 			ld $s3, ARROW_DER($zero)  				; $s3 = tecla "->" derecha
+			ld $a0, PERS_X($zero)					; carga coordenada X del personaje
+			ld $a1, PERS_Y($zero)					; carga coordenada Y del personaje
 			jal DibujarPersonaje
 
 			halt
@@ -133,10 +138,9 @@ finDibujar:	jr $ra
 
 ; Dibuja el personaje
 ; Asume:
-;   - 
-DibujarPersonaje: daddi $t2, $zero, 20				; posicion X del elemento en la matriz
-				daddi $t3, $zero, 5					; posicion Y del elemento en la matriz
-				daddi $t6, $zero, 0					; 
+;   - $a0 coordenada X del personaje
+;	- $a1 coordenada Y del personaje
+DibujarPersonaje: daddi $t6, $zero, 0					; 
 				daddi $t7, $zero, 1					; offset de pixeles del objeto a dibujar
 				daddi $t8, $zero, 0					; posicion del nuevo color a usar
 				daddi $t9, $zero, 99				; condicion de corte del sprite
@@ -147,12 +151,12 @@ dibujarPixel:	lbu $t6, JELPI($t7)					; carga la posX del sprite a dibujar
 				daddi $t9, $zero, 98				; 
 				beq $t6, $t9, cambiarColorPersonaje	; $t6 == 98 => cambiar de color
 				daddi $t9, $zero, 99				;
-				dadd $t6, $t6, $t2   				; ajusta posicion X del sprite
+				dadd $t6, $t6, $a0   				; ajusta posicion X del sprite
 				sb $t6, 5($s0)						; DATA+5 recibe el valor de coordenada X
 				daddi $t7, $t7, 1					; incrementa offset de pixeles del objeto a dibujar
 
 				lbu $t6, JELPI($t7)					; carga la posY del sprite a dibujar
-				dadd $t6, $t6, $t3   				; ajusta posicion Y del sprite
+				dadd $t6, $t6, $a1   				; ajusta posicion Y del sprite
 				sb $t6, 4($s0)						; DATA+4 recibe el valor de coordenada Y
 				daddi $t7, $t7, 1					; incrementa offset de pixeles del objeto a dibujar
 
