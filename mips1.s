@@ -18,7 +18,7 @@ BLOQUE: .byte 16,0,0,0,1,0,2,0,3,98,8,1,0,2,0,3,0,98,24,4,0,1,1,2,1,3,1,1,2,2,2,
 SUELO1: .byte 40,0,0,1,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,98,16,2,0,0,2,1,2,2,2,3,2,4,2,98,36,0,3,1,3,2,3,3,3,4,3,1,4,2,4,3,4,4,4,98,32,0,4,99,99,99
 
 JELPI: .byte 28,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,20,1,2,2,2,3,2,98,24,0,3,5,3,98,8,1,4,5,4,99
-BORRAR_JELPI: .byte 48,1,0,98,48,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,48,1,2,2,2,3,2,98,48,0,3,5,3,98,48,1,4,5,4,99
+BORRAR_JELPI: .byte 12,1,0,98,48,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,48,1,2,2,2,3,2,98,48,0,3,5,3,98,48,1,4,5,4,99
 
 
 
@@ -55,25 +55,66 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 			ld $s2, ARROW_IZQ($zero)  				; $s2 = tecla "<-" izquierda
 			ld $s3, ARROW_DER($zero)  				; $s3 = tecla "->" derecha
 
+			ld $v0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
+			ld $a0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
+			ld $v1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
+			ld $a1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
 
-													; REPETIR CICLO
-			ld $a0, PERS_X($zero)					; carga coordenada X del personaje
-			ld $a1, PERS_Y($zero)					; carga coordenada Y del personaje
-			
-			daddi $a2, $zero, 71					; offset de borrar pj
+													; REPETIR CICLO INFINITO
+ciclo_principal: daddi $a2, $zero, 71				; offset de sprite borrar_pj
 			daddi $a3, $zero, 70					; offset al nuevo color a usar
 			jal DibujarPersonaje					; primero borra el personaje ya dibujado
+
+			sd $v0, PERS_X($zero)					; actualiza pos X del pj
+			sd $v1, PERS_Y($zero)					; actualiza pos y del pj
+			dadd $a0, $zero, $v0					; carga pos X del pj
+			dadd $a1, $zero, $v1					; carga pos Y del pj
+			
 			daddi $a2, $zero, 1						; offset de pj
 			daddi $a3, $zero, 0						; offset al nuevo color a usar
 			jal DibujarPersonaje					; despues lo vuelve a redibujar
 			
 			;jal MoverPersonaje						; verifica colisiones y mueve PJ
-
-
+			jal Teclado
+			j ciclo_principal
 
 			halt
 
 
+
+; Controla los input de teclado. Usa un delay.
+; Asume:
+;   - $a0 coordenada X del personaje
+;	- $a1 coordenada Y del personaje
+; Devuelve:
+;   - $v0 coordenada X del personaje modificada
+Teclado: 		daddi   $t1, $zero, 10000      		; $t1 = ciclos de espera
+				daddi $t6, $zero, 0					; 
+				daddi $t0, $zero, 9					; modo teclado
+				dadd $v0, $zero, $a0				; devuelve la posicion X del pj modificada
+				
+				sd $t0, 0($s1)						; CONTROL recibe 9 y espera teclado
+				ld $t0, 0($s0)						; lee la tecla presionada guardada en DATA
+				andi $t0, $t0, 255 					; mascara para quedarse con la tecla presionada
+				j delayCycles
+
+tecl_continuar_ciclo: beq $t0, $s2, moverizquierda  ; verifica tecla <- presionada
+				beq $t0, $s3, moverderecha			; verifica tecla -> preisonada
+				j finTeclado
+
+moverderecha: 	daddi $v0, $v0, 2
+				sd $t6, PERS_X($zero)
+				j finTeclado
+
+moverizquierda: daddi $v0, $v0, -2
+				sd $t6, PERS_X($zero)
+				j finTeclado
+
+delayCycles:  	daddi $t1, $t1, -1
+              	bnez  $t1, delayCycles
+              	j tecl_continuar_ciclo
+
+finTeclado:		jr $ra
 
 
 
@@ -147,7 +188,7 @@ sigFila:		daddi $t2, $zero, 0					; pasa a la sig fila. Pone X en 0
 				daddi $t0, $t0, 6
 				j dibujar
 
-finDibujar:	jr $ra
+finDibujar:		jr $ra
 				
 
 
