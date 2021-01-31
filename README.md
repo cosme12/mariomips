@@ -7,11 +7,11 @@ se "invierte la gravedad" y el pj camina por el techo.
 
 ## Teclas
 
-**"a"** mover a la izquierda
+``a`` mover a la izquierda
 
-**"d"** mover a la derecha
+``d`` mover a la derecha
 
-**"barra espaciadora"** invertir gravedad
+``barra espaciadora`` invertir gravedad
 
 Cargar el archivo de juego `mips1.s`. Presionar `F4` para iniciar, `ejecutar -> detener` para detener el juego y `F10` para reiniciar.
 
