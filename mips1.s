@@ -36,6 +36,18 @@ FILA8:	.byte  0,0,0,1,0,0,0,0,0,1
 FILA9:	.byte  1,0,0,1,0,0,0,0,0,1
 FILA10:	.byte  2,2,2,2,2,2,2,2,2,2
 
+MAPA2:	.byte  2,2,2,2,2,2,2,2,2,2
+MAPA22:	.byte  2,2,2,2,2,2,2,2,2,2
+FILAB2:	.byte  2,0,0,0,0,0,0,0,0,2
+FILAB3:	.byte  2,0,0,0,0,0,0,0,0,1
+FILAB4:	.byte  2,0,0,0,0,0,0,0,0,2
+FILAB5:	.byte  2,0,0,0,0,0,0,0,0,2
+FILAB6:	.byte  2,0,0,0,0,0,0,0,0,2
+FILAB7:	.byte  2,0,0,0,0,0,0,0,0,2
+FILAB8:	.byte  1,0,0,0,0,0,0,0,0,2
+FILAB9:	.byte  2,0,0,0,0,0,0,0,0,2
+FILAB10: .byte  1,1,1,1,1,1,1,1,1,1
+
 
 PERS_X: .word 20									; coordenada X inicial del personaje
 PERS_Y: .word 5										; coordenada Y inicial del personaje
@@ -236,8 +248,8 @@ finCaerAbajo: jr $ra
 ; Dibuja toda la matriz del mapa
 ; Asume:
 ;   - 
-DibujarMapa:	daddi $t0, $zero, 0					; contador de sprites dibujados
-				daddi $t1, $zero, 160				; maxima cant de elementos en la matriz -> 10+6 por fila de matriz
+DibujarMapa:	daddi $t0, $zero, 0	;176				; contador de sprites dibujados
+				daddi $t1, $zero, 160	;336			; maxima cant de elementos en la matriz -> 10+6 por salto de fila de matriz
 				daddi $t2, $zero, 0					; posicion X del elemento en la matriz
 				daddi $t3, $zero, 45				; posicion Y del elemento en la matriz
 				daddi $t4, $zero, 50				; tamanio de la fila
