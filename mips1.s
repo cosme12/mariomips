@@ -24,15 +24,15 @@ BORRAR_JELPI: .byte 12,1,0,98,12,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5
 
 ;Mapa
 
-MAPA1:	.byte  1,0,0,0,0,0,0,0,0,1
-FILA1:	.byte  1,0,0,0,0,0,0,0,0,1
+MAPA1:	.byte  1,2,0,0,0,0,0,0,0,1
+FILA2:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA3:	.byte  0,0,0,1,0,0,0,0,0,0
 FILA4:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA5:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA6:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA7:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA8:	.byte  0,0,0,0,0,0,0,0,0,1
-FILA9:	.byte  0,0,0,0,0,0,0,0,0,1
+FILA9:	.byte  0,0,1,0,0,0,0,0,0,1
 FILA10:	.byte  2,2,2,2,2,2,2,2,2,2
 
 
@@ -88,9 +88,15 @@ ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
 ;	- $a1 coordenada Y del personaje
 ; Devuelve:
 ;   - $v0 coordenada X del personaje modificada
-MoverPersonaje: daddi   $t1, $zero, 5000      		; $t1 = ciclos de espera
-				daddi $t6, $zero, 0					; 
-				daddi $t0, $zero, 9					; modo teclado
+MoverPersonaje: daddi $t0, $zero, 9					; modo teclado
+				daddi   $t1, $zero, 5000      		; $t1 = ciclos de espera
+				daddi $t3, $zero, 5					; $t3 = tamanio de bloque mapa para colision
+				daddi $t4, $zero, 0					;
+				daddi $t5, $zero, 0					;	
+				daddi $t6, $zero, 0					;
+				daddi $t7, $zero, 9				; tamanio del mapa (10x10)
+				daddi $t9, $zero, 0
+
 				dadd $v0, $zero, $a0				; devuelve la posicion X del pj modificada
 				
 				sd $t0, 0($s1)						; CONTROL recibe 9 y espera teclado
@@ -98,25 +104,55 @@ MoverPersonaje: daddi   $t1, $zero, 5000      		; $t1 = ciclos de espera
 				andi $t0, $t0, 255 					; mascara para quedarse con la tecla presionada
 				j delayCycles
 
-teclContinuarCiclo: beq $t0, $s2, moverIzquierda    ; verifica tecla <- presionada
-				beq $t0, $s3, moverDerecha			; verifica tecla -> preisonada
-				j finTeclado
+teclContinuarCiclo: beq $t0, $s2, colisionIzq	    ; verifica tecla <- presionada
+				beq $t0, $s3, colisionDer			; verifica tecla -> preisonada
+				j finMoverPersonaje
 
 moverDerecha: 	daddi $v0, $v0, 3					; velocidad de movimiento del pj
 				sd $t6, PERS_X($zero)
-				j finTeclado
+				j finMoverPersonaje
 
 moverIzquierda: daddi $v0, $v0, -3					; velocidad de movimiento del pj
 				sd $t6, PERS_X($zero)
-				j finTeclado
+				j finMoverPersonaje
 
 delayCycles:  	daddi $t1, $t1, -1					; queda repitiendo ciclos, evita flickering
               	bnez  $t1, delayCycles
               	j teclContinuarCiclo
 
-colision:		
+colisionIzq:	daddi $a0, $a0, -3					; simula movimiento a la izquierda
+				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
+				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
+				daddi $k0, $t4, 0
+				daddi $a0, $a0, 3					; le vuelve a sumar 3 para dejarlo original
+				dsub $t5, $t7, $t5 					; 9 - $t5 para corregir el eje Y (que va al revez del mapa)
+				daddi $k1, $t5, 0
+				daddi $t7, $zero, 16
+				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
+				dadd $t4, $t4, $t5					; se lo suma a x y obtiene el offset al bloque en el mapa
+				lbu $sp, MAPA1($t4)
+				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
+				daddi $t5, $zero, 0					; 0 = bloque libre 
+				beq $t4, $t5, moverIzquierda	 	; 
+				j finMoverPersonaje					;
 
-finTeclado:		jr $ra
+colisionDer:	daddi $a0, $a0, 8					; simula movimiento a la derecha 3+5(del offset del dibujo)
+				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
+				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
+				daddi $k0, $t4, 0
+				daddi $a0, $a0, -8					; le vuelve a restar 8 para dejarlo original
+				dsub $t5, $t7, $t5 					; 9 - $t5 para corregir el eje Y (que va al revez del mapa)
+				daddi $k1, $t5, 0
+				daddi $t7, $zero, 16
+				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
+				dadd $t4, $t4, $t5					; se lo suma a x y obtiene el offset al bloque en el mapa
+				lbu $sp, MAPA1($t4)
+				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
+				daddi $t5, $zero, 0					; 0 = bloque libre 
+				beq $t4, $t5, moverDerecha 		 	; 
+				j finMoverPersonaje					;
+
+finMoverPersonaje: jr $ra
 
 
 
