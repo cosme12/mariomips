@@ -24,7 +24,7 @@ BORRAR_JELPI: .byte 12,1,0,98,12,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5
 
 ;Mapa
 
-MAPA1:	.byte  1,2,0,0,0,0,0,0,0,1
+MAPA1:	.byte  1,1,1,1,1,1,1,1,1,1
 FILA2:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA3:	.byte  1,1,1,1,1,0,0,0,0,0
 FILA4:	.byte  1,0,0,0,0,0,0,0,0,1
@@ -181,9 +181,11 @@ continuarCaer:	beq $a2, $t5, colisionAbajo			; $a2 = 0 cae hacia abajo
 				j colisionArriba					; sino cae hacia arriba
 
 colisionAbajo:	daddi $a1, $a1, -2					; simula movimiento para abajo
+				daddi $a0, $a0, 2					; corrige offset personaje
 				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
 				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
 				daddi $a1, $a1, 2					; le vuelve a sumar 2 para dejarlo original
+				daddi $a0, $a0, -2					; le vuelve a restar 2 para dejarlo original
 				dsub $t5, $t7, $t5 					; 9 - $t5 para corregir el eje Y (que va al revez del mapa)
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
@@ -206,10 +208,10 @@ colisionArriba:	daddi $a1, $a1, 7					; simula movimiento para arriba
 				beq $t4, $t5, moverArriba		 	;
 				j finCaerAbajo	
 
-moverAbajo: 	daddi $v1, $v1, -2					; velocidad de caida del pj
+moverAbajo: 	daddi $v1, $v1, -4					; velocidad de caida del pj
 				j finCaerAbajo				
 
-moverArriba: 	daddi $v1, $v1, 2					; velocidad de subida del pj
+moverArriba: 	daddi $v1, $v1, 4					; velocidad de subida del pj
 				j finCaerAbajo	
 
 finCaerAbajo: jr $ra
