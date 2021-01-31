@@ -16,7 +16,7 @@ se "invierte la gravedad" y el pj camina por el techo.
 
 ## Más informacion
 
-Para mas informacion ver el archivo: `instrucciones`. ![gameplay](https://raw.githubusercontent.com/cosme12/mariomips/master/instrucciones.s)
+Para mas informacion ver el archivo: `instrucciones`: ![gameplay](https://raw.githubusercontent.com/cosme12/mariomips/master/instrucciones.s)
 
 
 ## Imagenes
