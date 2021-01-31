@@ -78,6 +78,8 @@ Si esta libre x += 3 (velocidad de movimiento)
 
 La logica es igual para cuando el pj cae o sube.
 
+Para rotar el personaje se uso el codigo de python llamado rotarSprite.py en la carpeta recursos.
+
 
 
 ## Sistema grafico
