@@ -19,7 +19,8 @@ SUELO1: .byte 40,0,0,1,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,98,16,2,0,0,2,1,2,2,2,3,2,4
 
 JELPI: .byte 28,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,20,1,2,2,2,3,2,98,24,0,3,5,3,98,8,1,4,5,4,99
 BORRAR_JELPI: .byte 12,1,0,98,12,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,12,1,1,2,1,3,1,98,12,1,2,2,2,3,2,98,12,0,3,5,3,98,12,1,4,5,4,99
-
+JELPI2: .byte 12,4,6,98,28,4,6,2,6,4,3,3,3,2,3,1,3,5,2,3,2,2,2,1,2,5,1,4,1,3,1,2,1,1,1,0,1,5,0,1,0,98,48,4,5,3,5,2,5,98,20,4,4,3,4,2,4,98,24,5,3,0,3,98,8,4,2,0,2,99
+BORRAR_JELPI2: .byte 12,4,6,98,12,4,6,2,6,4,3,3,3,2,3,1,3,5,2,3,2,2,2,1,2,5,1,4,1,3,1,2,1,1,1,0,1,5,0,1,0,98,12,4,5,3,5,2,5,98,12,4,4,3,4,2,4,98,12,5,3,0,3,98,12,4,2,0,2,99
 
 
 ;Mapa
@@ -67,18 +68,31 @@ ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
 			daddi $a3, $zero, 72					; offset al nuevo color a usar
 			jal DibujarPersonaje					; primero borra el personaje ya dibujado
 
+			daddi $a2, $zero, 219					; offset de sprite borrar_pj (invertido)
+			daddi $a3, $zero, 218					; offset al nuevo color a usar
+			jal DibujarPersonaje					; primero borra el personaje ya dibujado
+
 			sd $v0, PERS_X($zero)					; actualiza pos X del pj
 			sd $v1, PERS_Y($zero)					; actualiza pos Y del pj
 			dadd $a0, $zero, $v0					; carga pos X del pj
 			dadd $a1, $zero, $v1					; carga pos Y del pj
 			
+			ld $a2, CAER($zero)
+			bnez $a2, dibujarInvertido				; dibujar pj invertido
 			daddi $a2, $zero, 1						; offset de pj
 			daddi $a3, $zero, 0						; offset al nuevo color a usar
 			jal DibujarPersonaje					; despues lo vuelve a redibujar
+			j input
+
+dibujarInvertido: daddi $a2, $zero, 145				; offset de pj
+			daddi $a3, $zero, 146					; offset al nuevo color a usar
+			jal DibujarPersonaje					; despues lo vuelve a redibujar
 			
-			ld $a2, CAER($zero)
+input:		ld $a2, CAER($zero)
 			jal CaerAbajo 							; verifica colision con el suelo
 			jal MoverPersonaje						; verifica colisiones y mueve PJ
+			
+
 			j ciclo_principal
 
 			halt
