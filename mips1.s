@@ -26,9 +26,9 @@ BORRAR_JELPI2: .byte 12,4,6,98,12,4,6,2,6,4,3,3,3,2,3,1,3,5,2,3,2,2,2,1,2,5,1,4,
 ;Mapa
 
 MAPA1:	.byte  1,1,1,1,1,1,1,1,1,1
-FILA2:	.byte  1,0,0,1,0,0,0,0,0,1
-FILA3:	.byte  1,0,0,0,0,0,0,0,0,0
-FILA4:	.byte  1,3,0,0,0,0,0,0,0,1
+FILA2:	.byte  1,3,0,1,0,0,0,0,0,1
+FILA3:	.byte  1,1,0,0,0,0,0,0,0,0
+FILA4:	.byte  1,0,0,0,0,0,0,0,0,1
 FILA5:	.byte  1,1,1,1,1,1,0,0,0,1
 FILA6:	.byte  1,0,0,0,0,1,0,0,0,1
 FILA7:	.byte  1,0,0,0,0,0,0,0,0,1
@@ -36,22 +36,19 @@ FILA8:	.byte  0,0,0,0,0,0,0,0,0,1
 FILA9:	.byte  1,0,0,1,0,0,0,0,0,1
 FILA10:	.byte  2,2,2,2,2,2,2,2,2,2
 
-MAPA2:	.byte  2,2,2,2,2,2,2,2,2,2
-MAPA22:	.byte  2,2,2,2,2,2,2,2,2,2
-FILAB2:	.byte  2,0,0,0,0,0,0,0,0,2
-FILAB3:	.byte  2,0,0,0,0,0,0,0,0,1
-FILAB4:	.byte  2,0,0,0,0,0,0,0,0,2
-FILAB5:	.byte  2,0,0,0,0,0,0,0,0,2
-FILAB6:	.byte  2,0,0,0,0,0,0,0,0,2
-FILAB7:	.byte  2,0,0,0,0,0,0,0,0,2
-FILAB8:	.byte  1,0,0,0,0,0,0,0,0,2
-FILAB9:	.byte  2,0,0,0,0,0,0,0,0,2
-FILAB10: .byte  1,1,1,1,1,1,1,1,1,1
+MAPA2:	.byte  1,1,1,1,1,1,1,1,1,1
+MAPA22:	.byte  1,1,1,1,1,1,1,1,1,1
+FILAB1:	.byte  1,0,1,0,0,0,0,0,0,1
+FILAB3:	.byte  1,0,1,0,0,0,0,0,0,1
+FILAB4:	.byte  1,0,0,0,1,1,1,1,0,1
+FILAB5:	.byte  1,0,0,0,1,3,0,1,0,1
+FILAB6:	.byte  1,0,0,0,1,1,0,1,0,1
+FILAB7:	.byte  1,0,2,0,2,0,0,0,0,1
+FILAB8:	.byte  1,0,2,0,2,0,0,0,0,1
+FILAB9:	.byte  1,0,2,0,2,0,1,0,0,1
+FILAB10: .byte  2,2,2,2,2,2,2,2,2,2
 
 
-
-;PERS_X: .word 5										; coordenada X del personaje
-;PERS_Y: .word 5										; coordenada Y del personaje
 CAER: .word 0										; 0 = caer hacia abajo / 1 = caer hacia arriba
 NIVEL_ACTUAL: .word 0								; numero de mapa en el que se esta jugando
 
@@ -68,21 +65,17 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 
 			daddi $v0, $zero, 5						; coordenada inicial X del personaje
 			daddi $v1, $zero, 5						; coordenada inicial Y del personaje
-			;sd $v0, PERS_X($zero)
-			;sd $v1, PERS_Y($zero)
-
+			daddi $t4, $zero, 0
+			sd $t4, CAER($zero)						; siempre cae hacia abajo al iniciar
+			
 													; control de personaje
 			ld $s2, ARROW_IZQ($zero)  				; $s2 = tecla "<-" izquierda
 			ld $s3, ARROW_DER($zero)  				; $s3 = tecla "->" derecha
 			ld $s4, ARROW_ARR($zero)  				; $s4 = tecla "Barra espaciadora" arriba
 
-			;ld $v0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
-			;ld $a0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
-			;ld $v1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
-			;ld $a1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
-
 			dadd $a0, $zero, $v0					; se precarga con la pos X actual para el primer ciclo
 			dadd $a1, $zero, $v1					; se precarga con la pos Y actual para el primer ciclo
+
 
 													; REPETIR CICLO INFINITO
 ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
@@ -93,8 +86,6 @@ ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
 			daddi $a3, $zero, 218					; offset al nuevo color a usar
 			jal DibujarPersonaje					; primero borra el personaje ya dibujado
 
-			;sd $v0, PERS_X($zero)					; actualiza pos X del pj
-			;sd $v1, PERS_Y($zero)					; actualiza pos Y del pj
 			dadd $a0, $zero, $v0					; carga pos X del pj
 			dadd $a1, $zero, $v1					; carga pos Y del pj
 			
@@ -128,7 +119,7 @@ input:		ld $a2, CAER($zero)
 ; Devuelve:
 ;   - $v0 coordenada X del personaje modificada
 MoverPersonaje: daddi $t0, $zero, 10				; modo teclado
-				daddi $t1, $zero, 10000      		; $t1 = ciclos de espera
+				daddi $t1, $zero, 7000      		; $t1 = ciclos de espera
 				daddi $t3, $zero, 5					; $t3 = tamanio de bloque mapa para colision
 				daddi $t4, $zero, 0					;
 				daddi $t5, $zero, 0					;	
@@ -159,20 +150,22 @@ invertGrav:		daddi $t4, $zero, 1					;
 				sd $t4, CAER($zero)					; cambia la gravedad
 				j teclContinuarCiclo
 
-moverDerecha: 	daddi $v0, $v0, 3					; velocidad de movimiento del pj
+moverDerecha: 	daddi $v0, $v0, 2					; velocidad de movimiento del pj
 				j finMoverPersonaje
 
-moverIzquierda: daddi $v0, $v0, -3					; velocidad de movimiento del pj
+moverIzquierda: daddi $v0, $v0, -2					; velocidad de movimiento del pj
 				j finMoverPersonaje
 
 delayCycles:  	daddi $t1, $t1, -1					; queda repitiendo ciclos, evita flickering
               	bnez  $t1, delayCycles
               	j invertirGravedad
 
-colisionIzq:	daddi $a0, $a0, -3					; simula movimiento a la izquierda
+colisionIzq:	daddi $a0, $a0, -2					; simula movimiento a la izquierda
+				daddi $a1, $a1, 2					; mueve el punto de colision al centro del pj
 				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
 				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
-				daddi $a0, $a0, 3					; le vuelve a sumar 3 para dejarlo original
+				daddi $a0, $a0, 2					; le vuelve a sumar 2 para dejarlo original
+				daddi $a1, $a1, -2					; le vuelve a restar 2 para dejarlo original
 				dsub $t5, $t7, $t5 					; 9 - $t5 para corregir el eje Y (que va al revez del mapa)
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
@@ -190,10 +183,12 @@ colisionIzq:	daddi $a0, $a0, -3					; simula movimiento a la izquierda
 				beq $t4, $t5, siguienteNivel	 	; avanzar al siguiente nivel
 				j finMoverPersonaje					;
 
-colisionDer:	daddi $a0, $a0, 8					; simula movimiento a la derecha 3+5(del offset del dibujo)
+colisionDer:	daddi $a0, $a0, 7					; simula movimiento a la derecha 3+5(del offset del dibujo)
+				daddi $a1, $a1, 2					; mueve el punto de colision al centro del pj
 				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
 				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
-				daddi $a0, $a0, -8					; le vuelve a restar 8 para dejarlo original
+				daddi $a0, $a0, -7					; le vuelve a restar 7 para dejarlo original
+				daddi $a1, $a1, -2					; le vuelve a restar 2 para dejarlo original
 				dsub $t5, $t7, $t5 					; 9 - $t5 para corregir el eje Y (que va al revez del mapa)
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
@@ -238,7 +233,7 @@ continuarCaer:	beq $a2, $t5, colisionAbajo			; $a2 = 0 cae hacia abajo
 				j colisionArriba					; sino cae hacia arriba
 
 colisionAbajo:	daddi $a1, $a1, -2					; simula movimiento para abajo
-				daddi $a0, $a0, 2					; corrige offset personaje
+				daddi $a0, $a0, 2					; corrige offset personaje, para borde abismo
 				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
 				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
 				daddi $a1, $a1, 2					; le vuelve a sumar 2 para dejarlo original
@@ -259,9 +254,11 @@ colisionAbajo:	daddi $a1, $a1, -2					; simula movimiento para abajo
 				j finCaerAbajo	
 
 colisionArriba:	daddi $a1, $a1, 7					; simula movimiento para arriba
+				daddi $a0, $a0, 2					; corrige offset personaje, para borde abismo
 				ddiv $t4, $a0, $t3					; divide posX/5 para ver en MAPA
 				ddiv $t5, $a1, $t3					; divide posY/5 para ver en MAPA
 				daddi $a1, $a1, -7					; le vuelve a restar 7(5+2) para dejarlo original
+				daddi $a0, $a0, -2					; le vuelve a restar 2 para dejarlo original
 				dsub $t5, $t7, $t5 					; 9 - $t5 para corregir el eje Y (que va al revez del mapa)
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
@@ -277,10 +274,10 @@ colisionArriba:	daddi $a1, $a1, 7					; simula movimiento para arriba
 				beq $t4, $t5, moverArriba		 	;
 				j finCaerAbajo	
 
-moverAbajo: 	daddi $v1, $v1, -4					; velocidad de caida del pj
+moverAbajo: 	daddi $v1, $v1, -2					; velocidad de caida del pj
 				j finCaerAbajo				
 
-moverArriba: 	daddi $v1, $v1, 4					; velocidad de subida del pj
+moverArriba: 	daddi $v1, $v1, 2					; velocidad de subida del pj
 				j finCaerAbajo	
 
 finCaerAbajo: jr $ra
