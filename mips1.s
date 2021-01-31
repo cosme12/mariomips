@@ -9,7 +9,7 @@ COLORES: .word32 0x000000, 0xe8f1ff, 0x532b1d, 0x82769c , 0x7e2553, 0x4d00ff ,0x
 
 ARROW_DER: .byte 0x64
 ARROW_IZQ: .byte 0x61
-ARROW_ARR: .byte 0x62
+ARROW_ARR: .byte 32
 ARROW_ABJ: .byte 32
 
 
@@ -55,7 +55,7 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 													; control de personaje
 			ld $s2, ARROW_IZQ($zero)  				; $s2 = tecla "<-" izquierda
 			ld $s3, ARROW_DER($zero)  				; $s3 = tecla "->" derecha
-			ld $s4, ARROW_ARR($zero)  				; $s4 = tecla "B" arriba
+			ld $s4, ARROW_ARR($zero)  				; $s4 = tecla "Barra espaciadora" arriba
 
 			ld $v0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
 			ld $a0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
@@ -122,11 +122,11 @@ MoverPersonaje: daddi $t0, $zero, 10				; modo teclado
 				j delayCycles
 
 				
-teclContinuarCiclo: beq $t0, $s2, colisionIzq	    ; verifica tecla <- presionada
-				beq $t0, $s3, colisionDer			; verifica tecla -> preisonada
+teclContinuarCiclo: beq $t0, $s2, colisionIzq	    ; verifica tecla "<-" presionada
+				beq $t0, $s3, colisionDer			; verifica tecla "->" preisonada
 				j finMoverPersonaje
 
-invertirGravedad: bne $t0, $s4, teclContinuarCiclo  ; verifica tecla "B" presionada
+invertirGravedad: bne $t0, $s4, teclContinuarCiclo  ; verifica tecla "Barra espaciadora" presionada
 				ld $t4, CAER($zero)
 				beqz $t4, invertGrav
 				daddi $t4, $zero, 0
