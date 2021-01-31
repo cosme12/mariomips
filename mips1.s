@@ -1,5 +1,13 @@
 .data
 
+; ##################################################################
+; 
+; 	Catedra:  Arquitectura de Computadoras 2020
+;   Profesor: Cesar Estrebou
+;	Alumno:   Diego Lanciotti
+;
+; ##################################################################
+
 CONTROL: .word32 0x10000
 DATA: .word32 0x10008
 
