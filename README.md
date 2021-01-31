@@ -1,11 +1,11 @@
 # Gameplay MarioMips
 
 La idea basica del juego es resolver el laberinto para recolectar el cristal y asi avanzar a los siguientes
-nivel. Para esto, debido a que el sistema no es lo suficientemente fluido como para simular el salto del pj,
+niveles. Para esto, debido a que el sistema no es lo suficientemente fluido como para simular el salto del pj,
 se "invierte la gravedad" y el pj camina por el techo.
 
 
-## Teclas
+## Teclas y como jugar
 
 ``a`` mover a la izquierda
 
