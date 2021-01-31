@@ -14,7 +14,8 @@ ARROW_ARR: .byte 32
 
 BACKGROUND: .byte 12,0,0,1,0,2,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,0,2,1,2,2,2,3,2,4,2,0,3,1,3,2,3,3,3,4,3,0,4,1,4,2,4,3,4,4,4,99,99,99,99,99,99,99,99,99
 BLOQUE: .byte 16,0,0,0,1,0,2,0,3,98,8,1,0,2,0,3,0,98,24,4,0,1,1,2,1,3,1,1,2,2,2,3,2,1,3,2,3,3,3,0,4,98,28,1,4,2,4,3,4,4,1,4,2,4,3,98,4,4,4,99
-SUELO1: .byte 40,0,0,1,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,98,16,2,0,0,2,1,2,2,2,3,2,4,2,98,36,0,3,1,3,2,3,3,3,4,3,1,4,2,4,3,4,4,4,98,32,0,4,99,99,99
+SUELO: .byte 40,0,0,1,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,98,16,2,0,0,2,1,2,2,2,3,2,4,2,98,36,0,3,1,3,2,3,3,3,4,3,1,4,2,4,3,4,4,4,98,32,0,4,99,99,99
+SIGNIVEL: .byte 44,2,2,3,2,1,2,2,3,2,1,99
 
 JELPI: .byte 28,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,48,1,1,2,1,3,1,98,20,1,2,2,2,3,2,98,24,0,3,5,3,98,8,1,4,5,4,99
 BORRAR_JELPI: .byte 12,1,0,98,12,1,0,3,0,1,3,2,3,3,3,4,3,0,4,2,4,3,4,4,4,0,5,1,5,2,5,3,5,4,5,5,5,0,6,4,6,98,12,1,1,2,1,3,1,98,12,1,2,2,2,3,2,98,12,0,3,5,3,98,12,1,4,5,4,99
@@ -25,13 +26,13 @@ BORRAR_JELPI2: .byte 12,4,6,98,12,4,6,2,6,4,3,3,3,2,3,1,3,5,2,3,2,2,2,1,2,5,1,4,
 ;Mapa
 
 MAPA1:	.byte  1,1,1,1,1,1,1,1,1,1
-FILA2:	.byte  1,0,0,0,0,0,0,0,0,1
-FILA3:	.byte  1,1,1,1,1,0,0,0,0,0
-FILA4:	.byte  1,0,0,0,0,0,0,0,0,1
-FILA5:	.byte  1,0,0,0,0,0,0,0,0,1
-FILA6:	.byte  1,0,0,0,0,0,0,0,0,1
-FILA7:	.byte  1,0,0,1,0,0,0,0,0,1
-FILA8:	.byte  0,0,0,1,0,0,0,0,0,1
+FILA2:	.byte  1,0,0,1,0,0,0,0,0,1
+FILA3:	.byte  1,0,0,0,0,0,0,0,0,0
+FILA4:	.byte  1,3,0,0,0,0,0,0,0,1
+FILA5:	.byte  1,1,1,1,1,1,0,0,0,1
+FILA6:	.byte  1,0,0,0,0,1,0,0,0,1
+FILA7:	.byte  1,0,0,0,0,0,0,0,0,1
+FILA8:	.byte  0,0,0,0,0,0,0,0,0,1
 FILA9:	.byte  1,0,0,1,0,0,0,0,0,1
 FILA10:	.byte  2,2,2,2,2,2,2,2,2,2
 
@@ -47,15 +48,12 @@ FILAB8:	.byte  1,0,0,0,0,0,0,0,0,2
 FILAB9:	.byte  2,0,0,0,0,0,0,0,0,2
 FILAB10: .byte  1,1,1,1,1,1,1,1,1,1
 
-MAPA44:	.byte  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0,0,2
-FILAB5:	.byte  2,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1
 
 
-
-PERS_X: .word 20									; coordenada X del personaje
-PERS_Y: .word 5										; coordenada Y del personaje
+;PERS_X: .word 5										; coordenada X del personaje
+;PERS_Y: .word 5										; coordenada Y del personaje
 CAER: .word 0										; 0 = caer hacia abajo / 1 = caer hacia arriba
-NIVEL_ACTUAL: .word 2								; numero de mapa en el que se esta jugando
+NIVEL_ACTUAL: .word 0								; numero de mapa en el que se esta jugando
 
 
 .text
@@ -68,16 +66,23 @@ inicio: 	daddi $t0, $zero, 7						; $t0 = 7 -> función 7: limpiar pantalla grá
 
 			jal DibujarMapa
 
+			daddi $v0, $zero, 5						; coordenada inicial X del personaje
+			daddi $v1, $zero, 5						; coordenada inicial Y del personaje
+			;sd $v0, PERS_X($zero)
+			;sd $v1, PERS_Y($zero)
+
 													; control de personaje
 			ld $s2, ARROW_IZQ($zero)  				; $s2 = tecla "<-" izquierda
 			ld $s3, ARROW_DER($zero)  				; $s3 = tecla "->" derecha
 			ld $s4, ARROW_ARR($zero)  				; $s4 = tecla "Barra espaciadora" arriba
 
-			ld $v0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
-			ld $a0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
-			ld $v1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
-			ld $a1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
+			;ld $v0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
+			;ld $a0, PERS_X($zero)					; se precarga con la pos X actual para el primer ciclo
+			;ld $v1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
+			;ld $a1, PERS_Y($zero)					; se precarga con la pos Y actual para el primer ciclo
 
+			dadd $a0, $zero, $v0					; se precarga con la pos X actual para el primer ciclo
+			dadd $a1, $zero, $v1					; se precarga con la pos Y actual para el primer ciclo
 
 													; REPETIR CICLO INFINITO
 ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
@@ -88,8 +93,8 @@ ciclo_principal: daddi $a2, $zero, 73				; offset de sprite borrar_pj
 			daddi $a3, $zero, 218					; offset al nuevo color a usar
 			jal DibujarPersonaje					; primero borra el personaje ya dibujado
 
-			sd $v0, PERS_X($zero)					; actualiza pos X del pj
-			sd $v1, PERS_Y($zero)					; actualiza pos Y del pj
+			;sd $v0, PERS_X($zero)					; actualiza pos X del pj
+			;sd $v1, PERS_Y($zero)					; actualiza pos Y del pj
 			dadd $a0, $zero, $v0					; carga pos X del pj
 			dadd $a1, $zero, $v1					; carga pos Y del pj
 			
@@ -181,6 +186,8 @@ colisionIzq:	daddi $a0, $a0, -3					; simula movimiento a la izquierda
 				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
 				daddi $t5, $zero, 0					; 0 = bloque libre 
 				beq $t4, $t5, moverIzquierda	 	; 
+				daddi $t5, $zero, 3					; 3 = bloque siguiente nivel 
+				beq $t4, $t5, siguienteNivel	 	; avanzar al siguiente nivel
 				j finMoverPersonaje					;
 
 colisionDer:	daddi $a0, $a0, 8					; simula movimiento a la derecha 3+5(del offset del dibujo)
@@ -201,6 +208,11 @@ colisionDer:	daddi $a0, $a0, 8					; simula movimiento a la derecha 3+5(del offs
 				daddi $t5, $zero, 0					; 0 = bloque libre 
 				beq $t4, $t5, moverDerecha 		 	; 
 				j finMoverPersonaje					;
+
+siguienteNivel: ld $t9, NIVEL_ACTUAL($zero)			; carga nivel actual
+				daddi $t9, $t9, 1					; le suma 1
+				sd $t9, NIVEL_ACTUAL($zero)			; lo vuelve a guardar
+				j inicio 							; reinicia al siguite nivel
 
 finMoverPersonaje: jr $ra
 
@@ -279,8 +291,8 @@ finCaerAbajo: jr $ra
 ; Dibuja toda la matriz del mapa
 ; Asume:
 ;   - 
-DibujarMapa:	daddi $t0, $zero, 0	;176				; contador de sprites dibujados
-				daddi $t1, $zero, 160	;336			; maxima cant de elementos en la matriz -> 10+6 por salto de fila de matriz
+DibujarMapa:	daddi $t0, $zero, 0					; contador de sprites dibujados
+				daddi $t1, $zero, 160				; maxima cant de elementos en la matriz -> 10+6 por salto de fila de matriz
 				daddi $t2, $zero, 0					; posicion X del elemento en la matriz
 				daddi $t3, $zero, 45				; posicion Y del elemento en la matriz
 				daddi $t4, $zero, 50				; tamanio de la fila
@@ -306,10 +318,14 @@ dibujar:		beq $t0, $t1, finDibujar 			; si se dibujo toda la matriz, finalizar s
 				daddi $t7, $zero, 65				; offset al siguiente sprite en la lista
 				daddi $t8, $zero, 64    			; offset al nuevo color a usar
 				beq $t5, $t6, dibujarBackgr			; $t5 == 1 => dibujar BLOQUE
-				daddi $t6, $zero, 2					; condicion de sprite a dibujar 2 == SUELO1
+				daddi $t6, $zero, 2					; condicion de sprite a dibujar 2 == SUELO
 				daddi $t7, $zero, 129				; offset al siguiente sprite en la lista
 				daddi $t8, $zero, 128  				; offset al nuevo color a usar
-				beq $t5, $t6, dibujarBackgr			; $t5 == 2 => dibujar SUELO1
+				beq $t5, $t6, dibujarBackgr			; $t5 == 2 => dibujar SUELO
+				daddi $t6, $zero, 3					; condicion de sprite a dibujar 3 == SIGNIVEL
+				daddi $t7, $zero, 193				; offset al siguiente sprite en la lista
+				daddi $t8, $zero, 192  				; offset al nuevo color a usar
+				beq $t5, $t6, dibujarBackgr			; $t5 == 3 => dibujar SIGNIVEL
 				j finElemento
 
 cambiarColor:	daddi $t7, $t7, 1
