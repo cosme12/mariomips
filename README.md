@@ -8,8 +8,11 @@ se "invierte la gravedad" y el pj camina por el techo.
 ## Teclas
 
 "a" mover a la izquierda
+
 "d" mover a la derecha
+
 "barra espaciadora" invertir gravedad
+
 
 ## Imagenes
 
@@ -19,5 +22,7 @@ se "invierte la gravedad" y el pj camina por el techo.
 ## Notas finales
 
 Catedra:  Arquitectura de Computadoras 2020
+
 Profesor: Cesar Estrebou
+
 Alumno:   Diego Lanciotti
