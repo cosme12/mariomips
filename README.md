@@ -14,6 +14,11 @@ se "invierte la gravedad" y el pj camina por el techo.
 **"barra espaciadora"** invertir gravedad
 
 
+## Más informacion
+
+Para mas informacion ver el archivo: `instrucciones`. ![gameplay](https://raw.githubusercontent.com/cosme12/mariomips/master/instrucciones.s)
+
+
 ## Imagenes
 
 ![gameplay](https://raw.githubusercontent.com/cosme12/mariomips/master/recursos/gameplay.png)
