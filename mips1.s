@@ -10,7 +10,6 @@ COLORES: .word32 0x000000, 0xe8f1ff, 0x532b1d, 0x82769c , 0x7e2553, 0x4d00ff ,0x
 ARROW_DER: .byte 0x64
 ARROW_IZQ: .byte 0x61
 ARROW_ARR: .byte 32
-ARROW_ABJ: .byte 32
 
 
 BACKGROUND: .byte 12,0,0,1,0,2,0,3,0,4,0,0,1,1,1,2,1,3,1,4,1,0,2,1,2,2,2,3,2,4,2,0,3,1,3,2,3,3,3,4,3,0,4,1,4,2,4,3,4,4,4,99,99,99,99,99,99,99,99,99
@@ -48,10 +47,15 @@ FILAB8:	.byte  1,0,0,0,0,0,0,0,0,2
 FILAB9:	.byte  2,0,0,0,0,0,0,0,0,2
 FILAB10: .byte  1,1,1,1,1,1,1,1,1,1
 
+MAPA44:	.byte  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0,0,2
+FILAB5:	.byte  2,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1
 
-PERS_X: .word 20									; coordenada X inicial del personaje
-PERS_Y: .word 5										; coordenada Y inicial del personaje
-CAER: .word 0										; 0 = caer hacia abajo
+
+
+PERS_X: .word 20									; coordenada X del personaje
+PERS_Y: .word 5										; coordenada Y del personaje
+CAER: .word 0										; 0 = caer hacia abajo / 1 = caer hacia arriba
+NIVEL_ACTUAL: .word 2								; numero de mapa en el que se esta jugando
 
 
 .text
@@ -101,7 +105,7 @@ dibujarInvertido: daddi $a2, $zero, 145				; offset de pj
 			jal DibujarPersonaje					; despues lo vuelve a redibujar
 			
 input:		ld $a2, CAER($zero)
-			jal CaerAbajo 							; verifica colision con el suelo
+			jal CaerAbajo 							; verifica colision con el suelo y techo
 			jal MoverPersonaje						; verifica colisiones y mueve PJ
 			
 
@@ -119,12 +123,14 @@ input:		ld $a2, CAER($zero)
 ; Devuelve:
 ;   - $v0 coordenada X del personaje modificada
 MoverPersonaje: daddi $t0, $zero, 10				; modo teclado
-				daddi $t1, $zero, 20000      		; $t1 = ciclos de espera
+				daddi $t1, $zero, 10000      		; $t1 = ciclos de espera
 				daddi $t3, $zero, 5					; $t3 = tamanio de bloque mapa para colision
 				daddi $t4, $zero, 0					;
 				daddi $t5, $zero, 0					;	
 				daddi $t6, $zero, 0					;
 				daddi $t7, $zero, 9					; tamanio del mapa (10x10)
+				daddi $t8, $zero, 0					;
+				daddi $t9, $zero, 0					;
 				dadd $v0, $zero, $a0				; devuelve la posicion X del pj modificada
 				
 
@@ -166,6 +172,12 @@ colisionIzq:	daddi $a0, $a0, -3					; simula movimiento a la izquierda
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
 				dadd $t4, $t4, $t5					; se lo suma a x y obtiene el offset al bloque en el mapa
+
+				ld $t8, NIVEL_ACTUAL($zero)	 		; ajusta el nivel actual del juego
+				daddi $t9, $zero, 176				; offset entre cada mapa siguiente	
+				dmul $t8, $t8, $t9
+				dadd $t4, $t8, $t4					; le suma offset del mapa siguiente
+
 				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
 				daddi $t5, $zero, 0					; 0 = bloque libre 
 				beq $t4, $t5, moverIzquierda	 	; 
@@ -179,6 +191,12 @@ colisionDer:	daddi $a0, $a0, 8					; simula movimiento a la derecha 3+5(del offs
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
 				dadd $t4, $t4, $t5					; se lo suma a x y obtiene el offset al bloque en el mapa
+
+				ld $t8, NIVEL_ACTUAL($zero)	 		; ajusta el nivel actual del juego
+				daddi $t9, $zero, 176				; offset entre cada mapa siguiente	
+				dmul $t8, $t8, $t9
+				dadd $t4, $t8, $t4					; le suma offset del mapa siguiente
+
 				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
 				daddi $t5, $zero, 0					; 0 = bloque libre 
 				beq $t4, $t5, moverDerecha 		 	; 
@@ -189,7 +207,7 @@ finMoverPersonaje: jr $ra
 
 
 
-; Controla la colision con el suelo
+; Controla la colision con el suelo y con el techo
 ; Asume:
 ;   - $a0 coordenada X del personaje
 ;	- $a1 coordenada Y del personaje
@@ -200,7 +218,8 @@ CaerAbajo:	 	daddi $t3, $zero, 5					; $t3 = tamanio de bloque mapa para colisio
 				daddi $t4, $zero, 0					;
 				daddi $t5, $zero, 0					;
 				daddi $t7, $zero, 9					; tamanio del mapa (10x10)
-				daddi $t8, $zero, 0
+				daddi $t8, $zero, 0					;
+				daddi $t9, $zero, 0					;
 				dadd $v1, $zero, $a1				; devuelve la posicion Y del pj modificada
 				
 continuarCaer:	beq $a2, $t5, colisionAbajo			; $a2 = 0 cae hacia abajo
@@ -216,6 +235,12 @@ colisionAbajo:	daddi $a1, $a1, -2					; simula movimiento para abajo
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
 				dadd $t4, $t4, $t5					; se lo suma a x y obtiene el offset al bloque en el mapa
+				
+				ld $t8, NIVEL_ACTUAL($zero)	 		; ajusta el nivel actual del juego
+				daddi $t9, $zero, 176				; offset entre cada mapa siguiente	
+				dmul $t8, $t8, $t9
+				dadd $t4, $t8, $t4					; le suma offset del mapa siguiente
+
 				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
 				daddi $t5, $zero, 0					; 0 = bloque libre 
 				beq $t4, $t5, moverAbajo		 	;
@@ -229,6 +254,12 @@ colisionArriba:	daddi $a1, $a1, 7					; simula movimiento para arriba
 				daddi $t7, $zero, 16
 				dmul $t5, $t5, $t7					; multiplica y*16 para avanzar en filas
 				dadd $t4, $t4, $t5					; se lo suma a x y obtiene el offset al bloque en el mapa
+				
+				ld $t8, NIVEL_ACTUAL($zero)	 		; ajusta el nivel actual del juego
+				daddi $t9, $zero, 176				; offset entre cada mapa siguiente	
+				dmul $t8, $t8, $t9
+				dadd $t4, $t8, $t4					; le suma offset del mapa siguiente
+
 				lbu $t4, MAPA1($t4)					; carga que hay en el mapa
 				daddi $t5, $zero, 0					; 0 = bloque libre 
 				beq $t4, $t5, moverArriba		 	;
@@ -258,6 +289,12 @@ DibujarMapa:	daddi $t0, $zero, 0	;176				; contador de sprites dibujados
 				daddi $t7, $zero, 1					; offset de pixeles del objeto a dibujar
 				daddi $t8, $zero, 0					; posicion del nuevo color a usar
 				daddi $t9, $zero, 99				; condicion de corte del sprite
+
+				ld $t5, NIVEL_ACTUAL($zero)	 		; ajusta el nivel actual del juego
+				daddi $t6, $zero, 176				; offset entre cada mapa siguiente	
+				dmul $t5, $t5, $t6
+				dadd $t0, $t5, $t0					; le suma offset del mapa siguiente
+				dadd $t1, $t5, $t1					; le suma offset del mapa siguiente
 
 
 dibujar:		beq $t0, $t1, finDibujar 			; si se dibujo toda la matriz, finalizar subrutina
