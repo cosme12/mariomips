@@ -25,6 +25,8 @@ Para mas informacion ver el archivo: `instrucciones`: ![gameplay](https://raw.gi
 
 ![gameplay](https://raw.githubusercontent.com/cosme12/mariomips/master/recursos/gameplay.png)
 
+![gameplay2](https://raw.githubusercontent.com/cosme12/mariomips/master/recursos/gameplay2.gif)
+
 
 ## Notas finales
 
