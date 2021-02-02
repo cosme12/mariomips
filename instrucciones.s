@@ -32,15 +32,18 @@ El sistema permite poder editar los mapas sin que sea necesario programar.
 2,0,0,0,0,0,0,0,0,2,
 2,0,0,0,0,0,0,0,0,2,
 2,0,0,0,0,0,0,0,0,2,
-2,0,0,0,0,X,0,0,0,2,
+2,X,0,0,0,0,0,0,0,2,
 1,1,1,1,1,1,1,1,1,1
 
 
-0 = fondo violeta (BACKGROUND)
+0 = fondo violeta (BACKGROUND) (se puede caminar)
 1 = piso
 2 = bloque
 3 = siguiente nivel
-x = personaje #no se debe excribir en la matriz, solo para ej de abajo
+4 = fondo negro (BACKGROUND) (se puede caminar)
+5 = cielo
+6 = bloque negro
+x = personaje #siempre aparece en la misma posicion sin importar el nivel
 
 Dibujar toda la matriz/mapa. Todos los sprites/bloques tienen un tamaño de 5x5 = 25 bytes
 |---> x
