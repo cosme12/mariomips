@@ -148,7 +148,7 @@ MAPA9J:	.byte  2,2,2,2,2,2,2,2,2,2
 
 
 CAER: .word 0										; 0 = caer hacia abajo / 1 = caer hacia arriba
-NIVEL_ACTUAL: .word 4								; numero de mapa en el que se esta jugando
+NIVEL_ACTUAL: .word 0								; numero de mapa en el que se esta jugando
 
 
 
